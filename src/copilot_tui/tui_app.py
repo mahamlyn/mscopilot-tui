@@ -170,6 +170,17 @@ try:
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.border_title = "Conversation History"
+            self._content = ""
+        
+        def clear(self) -> None:
+            """Clear the conversation history display."""
+            self._content = ""
+            self.update("")
+        
+        def write(self, text: str) -> None:
+            """Write text to the conversation history display."""
+            self._content = text
+            self.update(text)
 
     class MessageInput(Input):
         """Custom input widget for messages."""

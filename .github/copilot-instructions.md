@@ -42,8 +42,10 @@ Copilot TUI - A professional Terminal User Interface for multi-turn conversation
 ### Quick Start
 ```bash
 pip install -r requirements.txt
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 python main.py
+# On first run: follow the Device Code Flow sign-in prompt
 ```
 
 ### File Structure
@@ -52,6 +54,11 @@ python main.py
 - src/copilot_tui/persistence.py - File persistence
 - src/copilot_tui/models.py - Data models
 - src/copilot_tui/config.py - Configuration
+- docs/DEPLOYMENT.md - Full deployment guide
+- docs/DEPLOYMENT-QUICK-START.md - Quick-start deployment reference
+- scripts/build.sh - PyInstaller build script
+- examples/examples.py - Usage examples and demo scripts
+- release/ - Build artifacts output directory
 - conversations/ - Saved conversation directory
 - main.py - Application entry point
 

@@ -15,7 +15,7 @@ A modern Terminal User Interface (TUI) for multi-turn conversations with Microso
 ## Project Structure
 
 ```
-copilot-tui/
+mscopilot-tui/
 ├── src/copilot_tui/
 │   ├── __init__.py           # Package exports
 │   ├── models.py             # Data models (Message, Conversation)
@@ -23,9 +23,21 @@ copilot-tui/
 │   ├── api_client.py         # Copilot API client
 │   ├── tui_app.py            # TUI application logic
 │   └── persistence.py        # File persistence layer
-├── conversations/            # Saved conversation files
+├── docs/
+│   ├── DEPLOYMENT.md         # Full deployment guide
+│   └── DEPLOYMENT-QUICK-START.md  # Quick-start deployment reference
+├── examples/
+│   └── examples.py           # Usage examples and demo scripts
+├── scripts/
+│   └── build.sh              # PyInstaller build script
+├── release/                  # Build artifacts (generated, gitignored)
+├── conversations/            # Saved conversation files (generated)
 ├── tests/                    # Unit tests
 ├── main.py                   # Application entry point
+├── Makefile                  # Build and development commands
+├── Dockerfile                # Container image definition
+├── docker-compose.yml        # Docker Compose configuration
+├── pyproject.toml            # Package metadata and tool configuration
 ├── requirements.txt          # Python dependencies
 └── README.md                 # This file
 ```
@@ -58,21 +70,36 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 4. Configure API Key
+### 4. Configure Microsoft Entra ID Credentials
+
+This app authenticates against the **Microsoft Graph Copilot API** using
+OAuth 2.0 via Microsoft Entra ID (Azure AD). A static API key is **not** used.
+
+**Register an app** at [entra.microsoft.com](https://entra.microsoft.com) →
+*App registrations* → *New registration*, then copy the Tenant ID and Client ID.
 
 Create a `.env` file in the project root:
 
 ```bash
 cat > .env << 'EOF'
-COPILOT_API_KEY=your-github-copilot-api-key-here
+TENANT_ID=your-tenant-id-here
+CLIENT_ID=your-client-id-here
 EOF
 ```
 
-Or set the environment variable:
+Or set the environment variables directly:
 
 ```bash
-export COPILOT_API_KEY="your-github-copilot-api-key-here"
+export TENANT_ID="your-tenant-id-here"
+export CLIENT_ID="your-client-id-here"
 ```
+
+> **First run**: The app uses the **Device Code Flow** — it will print a URL
+> (`https://microsoft.com/devicelogin`) and a one-time code. Sign in once;
+> subsequent runs use the cached token automatically.
+>
+> **Requirements**: A Microsoft 365 Copilot licence and an E3/E5 subscription
+> are needed per the [API prerequisites](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/copilot-apis-overview#requirements).
 
 ## Running the Application
 
@@ -87,6 +114,20 @@ python main.py
 ```bash
 copilot-tui
 ```
+
+### Run Usage Examples
+
+```bash
+python examples/examples.py
+```
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Full packaging and deployment guide (PyInstaller, wheel, Docker, DEB) |
+| [docs/DEPLOYMENT-QUICK-START.md](docs/DEPLOYMENT-QUICK-START.md) | Quick-start reference for built artifacts |
+| [examples/examples.py](examples/examples.py) | Runnable usage examples for API, persistence, and models |
 
 ## Usage Guide
 
@@ -113,7 +154,11 @@ copilot-tui
 
 ```python
 import asyncio
-from src.copilot_tui.api_client import CopilotAPIClient
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent / "src"))  # or set PYTHONPATH=src
+
+from copilot_tui.api_client import CopilotAPIClient
 
 async def main():
     client = CopilotAPIClient()
@@ -155,8 +200,12 @@ asyncio.run(stream_example())
 ### Save Conversation
 
 ```python
-from src.copilot_tui.persistence import ConversationPersistence
-from src.copilot_tui.models import Conversation, SpeakerRole
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent / "src"))  # or set PYTHONPATH=src
+
+from copilot_tui.persistence import ConversationPersistence
+from copilot_tui.models import Conversation, SpeakerRole
 
 persistence = ConversationPersistence()
 
@@ -178,13 +227,15 @@ print(f"Loaded: {loaded.title} ({len(loaded.messages)} messages)")
 
 ## Configuration
 
-Edit `src/copilot_tui/config.py`:
+Edit `src/copilot_tui/config.py` or set environment variables:
 
 ```python
 @dataclass
 class Config:
-    COPILOT_API_KEY: str = os.getenv("COPILOT_API_KEY", "default-key")
-    COPILOT_API_URL: str = "https://api.github.com/copilot"
+    TENANT_ID: str = os.getenv("TENANT_ID", "common")        # Entra tenant ID
+    CLIENT_ID: str = os.getenv("CLIENT_ID", "")              # App registration ID
+    GRAPH_BASE_URL: str = "https://graph.microsoft.com/beta/copilot"
+    GRAPH_SCOPES: list = ["https://graph.microsoft.com/.default"]
     AUTO_SAVE: bool = False
     MAX_MESSAGE_LENGTH: int = 4096
 ```
@@ -240,11 +291,14 @@ Full conversation data is also saved in JSON for programmatic access:
 pip install -r requirements.txt
 ```
 
-### Issue: "API Key not found"
+### Issue: "Authentication failed / no token"
 
-**Solution**: Set your API key
+**Solution**: Ensure `TENANT_ID` and `CLIENT_ID` are set, then re-run to
+trigger the Device Code Flow sign-in prompt:
 ```bash
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
+python main.py
 ```
 
 ### Issue: Terminal display issues
@@ -268,6 +322,12 @@ Run unit tests:
 
 ```bash
 python -m pytest tests/ -v
+```
+
+Run usage examples:
+
+```bash
+python examples/examples.py
 ```
 
 ## API Reference

@@ -55,3 +55,6 @@ Thumbs.db
 conversations/*.md
 conversations/*.json
 copilot_tui.log
+
+# MSAL OAuth 2.0 token cache (contains sensitive Bearer tokens)
+.token_cache.json

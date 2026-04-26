@@ -58,14 +58,14 @@ lint:
 format:
 	@echo "Formatting code..."
 	$(PIP) install black isort 2>/dev/null || true
-	isort src/ main.py examples.py
-	black src/ main.py examples.py
+	isort src/ main.py examples/
+	black src/ main.py examples/
 	@echo "✓ Code formatted"
 
 # Build targets
 build:
 	@echo "Building PyInstaller executable..."
-	bash build.sh
+	bash scripts/build.sh
 
 package:
 	@echo "Building wheel and source distributions..."
@@ -83,7 +83,8 @@ docker:
 docker-run:
 	@echo "Running Docker container..."
 	docker run -it \
-		-e "COPILOT_API_KEY=${COPILOT_API_KEY}" \
+		-e "TENANT_ID=${TENANT_ID}" \
+		-e "CLIENT_ID=${CLIENT_ID}" \
 		-v $(PWD)/conversations:/app/conversations \
 		$(PROJECT_NAME):latest
 
@@ -108,6 +109,7 @@ release:
 	@cp dist/$(PROJECT_NAME)_*-py3-none-any.whl release/ 2>/dev/null || true
 	@cp dist/$(PROJECT_NAME)-*.tar.gz release/ 2>/dev/null || true
 	@echo "✓ Release artifacts in release/"
+	@echo "  See docs/DEPLOYMENT-QUICK-START.md for distribution instructions"
 	@ls -lh release/
 
 # Maintenance targets
@@ -157,6 +159,8 @@ check:
 	@command -v $(PIP) >/dev/null 2>&1 && echo "✓ pip installed" || echo "✗ pip not found"
 	@[ -f requirements.txt ] && echo "✓ requirements.txt found" || echo "✗ requirements.txt not found"
 	@[ -f main.py ] && echo "✓ main.py found" || echo "✗ main.py not found"
+	@[ -f scripts/build.sh ] && echo "✓ scripts/build.sh found" || echo "✗ scripts/build.sh not found"
+	@[ -d docs ] && echo "✓ docs/ directory found" || echo "✗ docs/ directory not found"
 	@[ -d src/copilot_tui ] && echo "✓ Source directory found" || echo "✗ Source directory not found"
 	@echo ""
 	@$(PYTHON) -c "import sys; print(f'Python: {sys.version}')"

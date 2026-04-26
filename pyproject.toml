@@ -39,6 +39,7 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "httpx>=0.24.0",
+    "msal>=1.20.0",
     "textual>=0.30.0",
     "pydantic>=2.5.0",
     "python-dotenv>=1.0.0",

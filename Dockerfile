@@ -26,7 +26,8 @@ RUN mkdir -p /app/conversations
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
-ENV COPILOT_API_KEY=""
+ENV TENANT_ID=""
+ENV CLIENT_ID=""
 ENV PYTHONPATH=/app
 
 # Health check

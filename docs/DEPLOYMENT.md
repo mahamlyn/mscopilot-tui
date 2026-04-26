@@ -105,7 +105,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Set API key placeholder
-ENV COPILOT_API_KEY=""
+ENV TENANT_ID=""
+ENV CLIENT_ID=""
 
 # Run the application
 CMD ["python", "main.py"]
@@ -121,7 +122,8 @@ docker tag copilot-tui:latest yourregistry/copilot-tui:0.1.0
 ### Run Container
 
 ```bash
-docker run -it -e "COPILOT_API_KEY=your-key" copilot-tui:latest
+docker run -it -e "TENANT_ID=your-tenant-id" \
+  -e "CLIENT_ID=your-client-id" copilot-tui:latest
 ```
 
 ### Push to Registry
@@ -181,7 +183,8 @@ cat > run.sh << 'EOF'
 #!/bin/bash
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/venv/bin/activate"
-export COPILOT_API_KEY="${COPILOT_API_KEY:-}"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 cd "$SCRIPT_DIR"
 python main.py "$@"
 EOF
@@ -198,7 +201,8 @@ tar -czf copilot-tui-bundle.tar.gz copilot-tui-bundle/
 ```bash
 tar -xzf copilot-tui-bundle.tar.gz
 cd copilot-tui-bundle
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 ./run.sh
 ```
 

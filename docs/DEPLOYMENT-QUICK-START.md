@@ -8,7 +8,8 @@ Successfully built deployment packages! Here's how to use them:
 ```bash
 # Direct use (Linux/WSL)
 ./dist/copilot-tui
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 ./dist/copilot-tui
 ```
 
@@ -25,7 +26,8 @@ export COPILOT_API_KEY="your-key"
 tar -xzf dist/copilot-tui-0.1.0-linux-x86_64.tar.gz
 
 # Run
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 ./copilot-tui
 ```
 
@@ -35,7 +37,8 @@ export COPILOT_API_KEY="your-key"
 unzip dist/copilot-tui-0.1.0-linux.zip
 
 # Run on WSL
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 ./copilot-tui
 ```
 
@@ -48,7 +51,8 @@ export COPILOT_API_KEY="your-key"
 pip install dist/copilot_tui-0.1.0-py3-none-any.whl
 
 # Run from anywhere
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 copilot-tui
 
 # Or specific environment
@@ -71,7 +75,8 @@ cd copilot_tui-0.1.0
 pip install .
 
 # Run
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 copilot-tui
 ```
 
@@ -87,14 +92,16 @@ docker build -t copilot-tui:latest .
 ### Run Container
 ```bash
 docker run -it \
-  -e "COPILOT_API_KEY=your-key" \
+  -e "TENANT_ID=your-tenant-id" \
+  -e "CLIENT_ID=your-client-id" \
   -v $(pwd)/conversations:/app/conversations \
   copilot-tui:latest
 ```
 
 ### Docker Compose
 ```bash
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 docker-compose up
 ```
 
@@ -187,14 +194,16 @@ export $(cat .env | xargs)
 ### Via pip
 ```bash
 pip install --user copilot-tui
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 copilot-tui
 ```
 
 ### Docker
 ```bash
 docker pull myregistry/copilot-tui:latest
-docker run -it -e COPILOT_API_KEY="your-key" \
+docker run -it -e TENANT_ID="your-tenant-id" \
+  -e CLIENT_ID="your-client-id" \
   -v conversations:/app/conversations \
   myregistry/copilot-tui:latest
 ```
@@ -208,7 +217,7 @@ docker run -it -e COPILOT_API_KEY="your-key" \
 vim src/copilot_tui/models.py
 
 # Rebuild
-./build.sh
+./scripts/build.sh
 
 # Test
 ./dist/copilot-tui
@@ -257,10 +266,12 @@ docker build --no-cache -t copilot-tui:latest .
 ### API key not recognized
 ```bash
 # Verify key is set
-echo $COPILOT_API_KEY
+echo $TENANT_ID
+echo $CLIENT_ID
 
 # Export properly
-export COPILOT_API_KEY="github_pat_..."
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 ./copilot-tui
 ```
 
@@ -287,7 +298,7 @@ python main.py
 
 **For Local Distribution:**
 ```bash
-./build.sh
+./scripts/build.sh
 ./dist/copilot-tui
 ```
 
@@ -302,7 +313,8 @@ git push origin v0.1.0  # Triggers CI/CD to build and release
 # Option 1: Direct executable
 wget https://github.com/youruser/copilot-tui/releases/download/v0.1.0/copilot-tui
 chmod +x copilot-tui
-export COPILOT_API_KEY="your-key"
+export TENANT_ID="your-tenant-id"
+export CLIENT_ID="your-client-id"
 ./copilot-tui
 
 # Option 2: pip install

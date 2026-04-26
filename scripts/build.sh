@@ -73,6 +73,10 @@ echo -e "\nBuilding PyInstaller executable..."
     --hidden-import=httpx \
     --hidden-import=textual \
     --hidden-import=pydantic \
+    --hidden-import=msal \
+    --hidden-import=msal.application \
+    --hidden-import=msal.token_cache \
+    --collect-all msal \
     --console \
     main.py
 
@@ -128,8 +132,10 @@ echo "4. Docker build:"
 echo "   docker build -t copilot-tui:latest ."
 echo ""
 
-echo -e "${YELLOW}Before running, set your API key:${NC}"
-echo "   export COPILOT_API_KEY='your-github-copilot-api-key'"
+echo -e "${YELLOW}Before running, set your Microsoft Entra ID credentials:${NC}"
+echo "   export TENANT_ID='your-tenant-id'"
+echo "   export CLIENT_ID='your-client-id'"
+echo "   # On first run, follow the Device Code Flow sign-in prompt"
 echo ""
 
 status "Build successful!"

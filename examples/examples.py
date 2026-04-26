@@ -6,7 +6,7 @@ import asyncio
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent / "src"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from copilot_tui.api_client import CopilotAPIClient
 from copilot_tui.persistence import ConversationPersistence
@@ -151,12 +151,12 @@ async def main():
     # Run persistence example
     example_persistence()
     
-    # Run API example (requires valid API key)
-    print("=== API Client Example ===\n")
-    print("Note: This requires a valid COPILOT_API_KEY environment variable")
-    print("Set it with: export COPILOT_API_KEY='your-key'\n")
-    
-    # Uncomment to run (requires valid API key):
+    # Run API example (requires Microsoft Entra ID credentials)
+    print("=== API Client Example ===")
+    print("Note: This requires TENANT_ID and CLIENT_ID set in .env")
+    print("      On first run you will be prompted to sign in via Device Code Flow.\n")
+
+    # Uncomment to run (requires valid Entra credentials):
     # await example_api_usage()
 
 

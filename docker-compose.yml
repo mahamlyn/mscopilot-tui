@@ -13,7 +13,8 @@ services:
     image: copilot-tui:latest
     
     environment:
-      - COPILOT_API_KEY=${COPILOT_API_KEY:-}
+      - TENANT_ID=${TENANT_ID:-}
+      - CLIENT_ID=${CLIENT_ID:-}
       - PYTHONUNBUFFERED=1
       - TZ=UTC
     

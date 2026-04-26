@@ -170,17 +170,6 @@ try:
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.border_title = "Conversation History"
-            self._content = ""
-        
-        def clear(self) -> None:
-            """Clear the conversation history display."""
-            self._content = ""
-            self.update("")
-        
-        def write(self, text: str) -> None:
-            """Write text to the conversation history display."""
-            self._content = text
-            self.update(text)
 
     class MessageInput(Input):
         """Custom input widget for messages."""
@@ -316,3 +305,27 @@ try:
 except ImportError:
     logger.warning("Textual not installed. API client only mode available.")
     CopilotApp = None  # type: ignore
+
+
+def main():
+    """Entry point for the copilot-tui console script."""
+    import logging
+    from .config import config
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.FileHandler(config.PROJECT_ROOT / "copilot_tui.log"),
+            logging.StreamHandler(),
+        ],
+    )
+
+    if CopilotApp is None:
+        print("Error: Textual framework not installed.")
+        print("Please run: pip install -r requirements.txt")
+        raise SystemExit(1)
+
+    logger.info("Starting Copilot TUI Application")
+    app = CopilotApp()
+    app.run()

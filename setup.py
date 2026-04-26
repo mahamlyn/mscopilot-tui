@@ -38,6 +38,7 @@ setup(
         "textual>=0.30.0",
         "pydantic>=2.5.0",
         "python-dotenv>=1.0.0",
+        "msal>=1.20.0",
     ],
     extras_require={
         "dev": [
